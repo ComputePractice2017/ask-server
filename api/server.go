@@ -1,9 +1,19 @@
 package api
 
-import "log"
+import (
+	"log"
+	"net/http"
 
-// Функция Run для запуска сервера
+	"github.com/gorilla/mux"
+)
+
+//Run для запуска сервера
 func Run() {
 
-	log.Println("Hello World MZF!!!")
+	r := mux.NewRouter()
+	r.HandleFunc("/", helloMFWorldHandler).Methods("GET")
+
+	log.Println("Running the server on port 8000...")
+	http.ListenAndServe(":8000", r)
+
 }
