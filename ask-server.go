@@ -1,7 +1,8 @@
-package main 
+package main
 
-import "log"
+import "github.com/ComputePractice2017/ask-server/api"
 
-func main(){
-   log.Println("Hello World MZF!!!") 
+func main() {
+
+	api.Run()
 }
