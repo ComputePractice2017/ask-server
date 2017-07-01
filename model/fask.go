@@ -13,7 +13,6 @@ type AndAs struct {
 
 // Faskurl структура для хранения страничек
 type Faskurl struct {
-	ID    string  `json:"id"`
 	Murl  string  `json:"murl"`
 	Surl  string  `json:"surl"`
 	Fasks []AndAs `json:"fasks"`
