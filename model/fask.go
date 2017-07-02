@@ -6,17 +6,17 @@ import (
 
 // AndAs структура для хранения вопроса и ответа на него
 type AndAs struct {
-	ID     string `json:"id"`
-	Ask    string `json:"ask"`
-	Answer string `json:"answer"`
+	ID     string `json:"id",gorethink:"id"`
+	Ask    string `json:"ask",gorethink:"ask"`
+	Answer string `json:"answer",gorethink:"answer"`
 }
 
 // Faskurl структура для хранения страничек
 type Faskurl struct {
-	ID    string  `json:"id"`
-	Murl  string  `json:"murl"`
-	Surl  string  `json:"surl"`
-	Fasks []AndAs `json:"fasks"`
+	ID    string  `json:"id",gorethink:"id"`
+	Murl  string  `json:"murl".gorethink:"murl"`
+	Surl  string  `json:"surl",gorethink:"surl"`
+	Fasks []AndAs `json:"fasks",gorethink:"fasks"`
 }
 
 // Pagedata хранилище страничек вопросника
