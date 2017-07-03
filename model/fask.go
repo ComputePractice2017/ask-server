@@ -32,3 +32,52 @@ func InitSession() error {
 	})
 	return err
 }
+
+//NewFask функция создания нового опросника
+func NewFask() (Faskurl, string, string, error) {
+
+	var f Faskurl
+	var murl string
+	var surl string
+
+	res, err := r.UUID().Run(session)
+	if err != nil {
+		return f, murl, surl, err
+	}
+
+	// получаем основной guid для адресса опросника
+	var MUUID string
+	err = res.One(&MUUID)
+	if res != nil {
+		return f, murl, surl, err
+	}
+
+	// получаем секретный guid для адресса опросника
+	var SUUID string
+	err = res.One(&SUUID)
+	if res != nil {
+		return f, murl, surl, err
+	}
+
+	// получаем id для объекта опросник
+	var UUID string
+	err = res.One(&UUID)
+	if res != nil {
+		return f, murl, surl, err
+	}
+
+	f.Murl = MUUID
+	f.Surl = SUUID
+	f.ID = UUID
+
+	// производим запись в БД
+	res, err = r.DB("Faskdb").Table("fasker").Insert(f).Run(session)
+	if res != nil {
+		return f, murl, surl, err
+	}
+
+	murl = "http://localhost:8000/fask/" + MUUID
+	surl = "http://localhost:8000/fask/" + MUUID + "/" + SUUID
+
+	return f, murl, surl, nil
+}
