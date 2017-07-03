@@ -4,11 +4,19 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/ComputePractice2017/ask-server/model"
 	"github.com/gorilla/mux"
 )
 
 //Run для запуска сервера
 func Run() {
+
+	log.Println("Connecting to rethinkDB on localhost...")
+	err := model.InitSession()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Connected")
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", helloMFWorldHandler).Methods("GET")
