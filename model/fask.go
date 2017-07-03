@@ -32,6 +32,7 @@ func InitSession() error {
 	return err
 }
 
+
 //NewFask функция создания нового опросника
 func NewFask() (Faskurl, error) {
 
@@ -70,6 +71,40 @@ func NewFask() (Faskurl, error) {
 	// производим запись в БД
 	res, err = r.DB("Faskdb").Table("fasker").Insert(f).Run(session)
 	if res != nil {
+		return f, err
+	}
+
+	return f, nil
+}
+//GetMFask функция для получения вопросов и ответов на общую страницу вопросника
+func GetMFask(url string) (Faskurl, error) {
+	var f Faskurl
+
+	res, err := r.DB("Faskdb").Table("fasker").GetAllByIndex("murl", url).Run(session)
+	if err != nil {
+		return f, err
+	}
+
+	err = res.One(&f)
+	if err != nil {
+		return f, err
+	}
+
+	return f, nil
+
+}
+
+//GetSFask функция для получения вопросов и ответов на страницу вопросника только для создавшего вопросник
+func GetSFask(url string) (Faskurl, error) {
+	var f Faskurl
+
+	res, err := r.DB("Faskdb").Table("fasker").GetAllByIndex("surl", url).Run(session)
+	if err != nil {
+		return f, err
+	}
+
+	err = res.One(&f)
+	if err != nil {
 		return f, err
 	}
 
