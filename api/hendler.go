@@ -16,11 +16,10 @@ func helloMFWorldHandler(w http.ResponseWriter, r *http.Request) {
 
 func newFaskHandler(w http.ResponseWriter, r *http.Request) {
 
-	var fasks model.Faskurl
 	var murl string
 	var surl string
 
-	fasks, murl, surl, err := model.NewFask()
+	murl, surl, err := model.NewFask()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println(err)
@@ -29,7 +28,8 @@ func newFaskHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 
-	if err = json.NewEncoder(w).Encode(fasks); err != nil {
+	//как я понимаю я должен как то передать в Encode адреса чтобы они вернулись из функции
+	if err = json.NewEncoder(w).Encode(); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println(err)
 	}
