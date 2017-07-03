@@ -21,6 +21,8 @@ func Run() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", helloMFWorldHandler).Methods("GET")
 	r.HandleFunc("/fask/{guid}/{guid1}/question", newAskHandler).Methods("POST")
+	r.HandleFunc("/fask/{guid}", getMFaskHandler).Methods("GET")
+	r.HandleFunc("/fask/{guid}/{guid1}", getSFaskHandler).Methods("GET")
 
 	log.Println("Running the server on port 8000...")
 	http.ListenAndServe(":8000", r)
