@@ -35,6 +35,7 @@ func InitSession() error {
 	return err
 }
 
+
 //NewAnswer функция для добовления ответа на определенный вопрос
 func NewAnswer(url string, id string, answer string) error {
 
@@ -63,5 +64,39 @@ func NewAnswer(url string, id string, answer string) error {
 	}
 
 	return nil
+}
+//GetMFask функция для получения вопросов и ответов на общую страницу вопросника
+func GetMFask(url string) (Faskurl, error) {
+	var f Faskurl
+
+	res, err := r.DB("Faskdb").Table("fasker").GetAllByIndex("murl", url).Run(session)
+	if err != nil {
+		return f, err
+	}
+
+	err = res.One(&f)
+	if err != nil {
+		return f, err
+	}
+
+	return f, nil
+
+}
+
+//GetSFask функция для получения вопросов и ответов на страницу вопросника только для создавшего вопросник
+func GetSFask(url string) (Faskurl, error) {
+	var f Faskurl
+
+	res, err := r.DB("Faskdb").Table("fasker").GetAllByIndex("surl", url).Run(session)
+	if err != nil {
+		return f, err
+	}
+
+	err = res.One(&f)
+	if err != nil {
+		return f, err
+	}
+
+	return f, nil
 
 }
