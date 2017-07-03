@@ -19,8 +19,7 @@ type Faskurl struct {
 	Fasks []AndAs `json:"fasks",gorethink:"fasks"`
 }
 
-// Pagedata хранилище страничек вопросника
-//var Pagedata []Faskurl
+
 
 var session *r.Session
 
@@ -34,36 +33,34 @@ func InitSession() error {
 }
 
 //NewFask функция создания нового опросника
-func NewFask() (string, string, error) {
+func NewFask() (Faskurl, error) {
 
 	var f Faskurl
-	var murl string
-	var surl string
 
 	res, err := r.UUID().Run(session)
 	if err != nil {
-		return murl, surl, err
+		return f, err
 	}
 
 	// получаем основной guid для адресса опросника
 	var MUUID string
 	err = res.One(&MUUID)
 	if res != nil {
-		return murl, surl, err
+		return f, err
 	}
 
 	// получаем секретный guid для адресса опросника
 	var SUUID string
 	err = res.One(&SUUID)
 	if res != nil {
-		return murl, surl, err
+		return f, err
 	}
 
 	// получаем id для объекта опросник
 	var UUID string
 	err = res.One(&UUID)
 	if res != nil {
-		return murl, surl, err
+		return f, err
 	}
 
 	f.Murl = MUUID
@@ -73,11 +70,8 @@ func NewFask() (string, string, error) {
 	// производим запись в БД
 	res, err = r.DB("Faskdb").Table("fasker").Insert(f).Run(session)
 	if res != nil {
-		return murl, surl, err
+		return f, err
 	}
 
-	murl = "http://localhost:8000/fask/" + MUUID
-	surl = "http://localhost:8000/fask/" + MUUID + "/" + SUUID
-
-	return murl, surl, nil
+	return f, nil
 }
