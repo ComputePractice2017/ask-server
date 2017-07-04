@@ -1,6 +1,8 @@
 package model
 
 import (
+	"strconv"
+
 	r "gopkg.in/gorethink/gorethink.v3"
 )
 
@@ -31,6 +33,7 @@ func InitSession() error {
 	})
 	return err
 }
+
 
 
 //NewFask функция создания нового опросника
@@ -75,6 +78,38 @@ func NewFask() (Faskurl, error) {
 	}
 
 	return f, nil
+}
+
+
+
+//NewAnswer функция для добовления ответа на определенный вопрос
+func NewAnswer(url string, id string, answer string) error {
+
+	res, err := r.DB("Faskdb").Table("fasker").GetAllByIndex("surl", url).Run(session)
+	if err != nil {
+		return err
+	}
+
+	var f Faskurl
+	err = res.One(&f)
+	if err != nil {
+		return err
+	}
+
+	var nid int
+	nid, err = strconv.Atoi(id)
+	if err != nil {
+		return err
+	}
+	
+	f.Fasks[nid].Answer = answer
+
+	_, err = r.DB("Faskdb").Table("fasker").Get(f.ID).Replace(f).Run(session)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 //NewAsk функция для добовления нового вопроса
