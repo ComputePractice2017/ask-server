@@ -11,7 +11,9 @@ import (
 	"net/http"
 
 	"github.com/ComputePractice2017/ask-server/model"
+
 	"github.com/gorilla/mux"
+
 )
 
 func helloMFWorldHandler(w http.ResponseWriter, r *http.Request) {
@@ -21,6 +23,24 @@ func helloMFWorldHandler(w http.ResponseWriter, r *http.Request) {
 
 
 
+
+func newFaskHandler(w http.ResponseWriter, r *http.Request) {
+var fasks model.Faskurl
+
+	fasks, err := model.NewFask()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+
+	if err = json.NewEncoder(w).Encode(fasks); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Println(err)
+	}
+}
 func newAnswerHandler(w http.ResponseWriter, r *http.Request) {
 
 var answer string
@@ -28,11 +48,13 @@ var answer string
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
+
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
+
 	if err := r.Body.Close(); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println(err)
@@ -70,6 +92,7 @@ func newAskHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+
 	if err := r.Body.Close(); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println(err)
@@ -138,6 +161,7 @@ func getSFaskHandler(w http.ResponseWriter, r *http.Request) {
 	if err = json.NewEncoder(w).Encode(fasks); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println(err)
+
 		return
 	}
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")

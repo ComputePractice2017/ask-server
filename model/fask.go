@@ -21,8 +21,7 @@ type Faskurl struct {
 	Fasks []AndAs `json:"fasks",gorethink:"fasks"`
 }
 
-// Pagedata хранилище страничек вопросника
-//var Pagedata []Faskurl
+
 
 var session *r.Session
 
@@ -33,6 +32,52 @@ func InitSession() error {
 		Address: "localhost",
 	})
 	return err
+}
+
+
+
+//NewFask функция создания нового опросника
+func NewFask() (Faskurl, error) {
+
+	var f Faskurl
+
+	res, err := r.UUID().Run(session)
+	if err != nil {
+		return f, err
+	}
+
+	// получаем основной guid для адресса опросника
+	var MUUID string
+	err = res.One(&MUUID)
+	if res != nil {
+		return f, err
+	}
+
+	// получаем секретный guid для адресса опросника
+	var SUUID string
+	err = res.One(&SUUID)
+	if res != nil {
+		return f, err
+	}
+
+	// получаем id для объекта опросник
+	var UUID string
+	err = res.One(&UUID)
+	if res != nil {
+		return f, err
+	}
+
+	f.Murl = MUUID
+	f.Surl = SUUID
+	f.ID = UUID
+
+	// производим запись в БД
+	res, err = r.DB("Faskdb").Table("fasker").Insert(f).Run(session)
+	if res != nil {
+		return f, err
+	}
+
+	return f, nil
 }
 
 
@@ -66,6 +111,7 @@ func NewAnswer(url string, id string, answer string) error {
 
 	return nil
 }
+
 //NewAsk функция для добовления нового вопроса
 func NewAsk(url string, ask string) error {
 
@@ -92,6 +138,7 @@ func NewAsk(url string, ask string) error {
 
 	return nil
 }
+
 
 //GetMFask функция для получения вопросов и ответов на общую страницу вопросника
 func GetMFask(url string) (Faskurl, error) {
@@ -126,6 +173,5 @@ func GetSFask(url string) (Faskurl, error) {
 	}
 
 	return f, nil
-
 
 }
