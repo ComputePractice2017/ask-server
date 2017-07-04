@@ -19,8 +19,10 @@ func Run() {
 	log.Println("Connected")
 
 	r := mux.NewRouter()
+
   r.HandleFunc("/", helloMFWorldHandler).Methods("GET")
-	r.HandleFunc("/fask/{guid}/{guid1}/question/{id}", newAnswerHandler).Methods("POST")
+  r.HandleFunc("/fask/{guid}/{guid1}/question/{id}", newAnswerHandler).Methods("POST")
+	r.HandleFunc("/fask/{guid}/{guid1}/question", newAskHandler).Methods("POST")
 	r.HandleFunc("/fask/{guid}", getMFaskHandler).Methods("GET")
 	r.HandleFunc("/fask/{guid}/{guid1}", getSFaskHandler).Methods("GET")
 
