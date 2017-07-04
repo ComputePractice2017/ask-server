@@ -1,6 +1,8 @@
 package model
 
 import (
+	"log"
+	"os"
 	"strconv"
 
 	r "gopkg.in/gorethink/gorethink.v3"
@@ -24,10 +26,78 @@ var session *r.Session
 
 //InitSession активирует сессию связи с БД
 func InitSession() error {
+	dbaddress := os.Getenv("RETHINKDB_HOST")
+	if dbaddress == "" {
+		dbaddress = "localhost"
+	}
+
+	log.Printf("RETHINKDB_HOST: %s\n", dbaddress)
 	var err error
 	session, err = r.Connect(r.ConnectOpts{
-		Address: "localhost",
+		Address: dbaddress,
 	})
+	if err != nil {
+		return err
+	}
+
+	err = CreateDBIfNotExist()
+	if err != nil {
+		return err
+	}
+
+	err = CreateTableIfNotExist()
+
+	return err
+}
+
+//CreateDBIfNotExist функция создания БД если она ещще не создана
+func CreateDBIfNotExist() error {
+	res, err := r.DBList().Run(session)
+	if err != nil {
+		return err
+	}
+
+	var dbList []string
+	err = res.All(&dbList)
+	if err != nil {
+		return err
+	}
+
+	for _, item := range dbList {
+		if item == "Faskdb" {
+			return nil
+		}
+	}
+
+	_, err = r.DBCreate("Faskdb").Run(session)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// CreateTableIfNotExist функция создания таблицы в БД если она не создана
+func CreateTableIfNotExist() error {
+	res, err := r.DB("Faskdb").TableList().Run(session)
+	if err != nil {
+		return err
+	}
+
+	var tableList []string
+	err = res.All(&tableList)
+	if err != nil {
+		return err
+	}
+
+	for _, item := range tableList {
+		if item == "fasker" {
+			return nil
+		}
+	}
+
+	_, err = r.DB("Faskdb").TableCreate("fasker", r.TableCreateOpts{PrimaryKey: "ID"}).Run(session)
+
 	return err
 }
 
