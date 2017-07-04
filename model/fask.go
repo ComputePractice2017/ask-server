@@ -8,17 +8,16 @@ import (
 
 // AndAs структура для хранения вопроса и ответа на него
 type AndAs struct {
-	ID     string `json:"id",gorethink:"id"`
-	Ask    string `json:"ask",gorethink:"ask"`
-	Answer string `json:"answer",gorethink:"answer"`
+	Ask    string `json:"ask", gorethink:"ask"`
+	Answer string `json:"answer", gorethink:"answer"`
 }
 
 // Faskurl структура для хранения страничек
 type Faskurl struct {
-	ID    string  `json:"id",gorethink:"id"`
-	Murl  string  `json:"murl".gorethink:"murl"`
-	Surl  string  `json:"surl",gorethink:"surl"`
-	Fasks []AndAs `json:"fasks",gorethink:"fasks"`
+	ID    string  `json:"id", gorethink:"id"`
+	Murl  string  `json:"murl", gorethink:"murl"`
+	Surl  string  `json:"surl", gorethink:"surl"`
+	Fasks []AndAs `json:"fasks", gorethink:"fasks"`
 }
 
 var session *r.Session
@@ -88,7 +87,9 @@ func NewFask() (Faskurl, error) {
 //NewAnswer функция для добовления ответа на определенный вопрос
 func NewAnswer(url string, id string, answer string) error {
 
-	res, err := r.DB("Faskdb").Table("fasker").GetAllByIndex("surl", url).Run(session)
+	res, err := r.DB("Faskdb").Table("fasker").Filter(map[string]interface{}{
+		"Surl": url,
+	}).Run(session)
 	if err != nil {
 		return err
 	}
@@ -118,7 +119,9 @@ func NewAnswer(url string, id string, answer string) error {
 //NewAsk функция для добовления нового вопроса
 func NewAsk(url string, ask string) error {
 
-	res, err := r.DB("Faskdb").Table("fasker").GetAllByIndex("murl", url).Run(session)
+	res, err := r.DB("Faskdb").Table("fasker").Filter(map[string]interface{}{
+		"Murl": url,
+	}).Run(session)
 	if err != nil {
 		return err
 	}
@@ -146,7 +149,9 @@ func NewAsk(url string, ask string) error {
 func GetMFask(url string) (Faskurl, error) {
 	var f Faskurl
 
-	res, err := r.DB("Faskdb").Table("fasker").GetAllByIndex("murl", url).Run(session)
+	res, err := r.DB("Faskdb").Table("fasker").Filter(map[string]interface{}{
+		"Murl": url,
+	}).Run(session)
 	if err != nil {
 		return f, err
 	}
@@ -164,7 +169,9 @@ func GetMFask(url string) (Faskurl, error) {
 func GetSFask(url string) (Faskurl, error) {
 	var f Faskurl
 
-	res, err := r.DB("Faskdb").Table("fasker").GetAllByIndex("surl", url).Run(session)
+	res, err := r.DB("Faskdb").Table("fasker").Filter(map[string]interface{}{
+		"Surl": url,
+	}).Run(session)
 	if err != nil {
 		return f, err
 	}
