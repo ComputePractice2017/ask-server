@@ -33,6 +33,34 @@ func InitSession() error {
 	return err
 }
 
+
+//NewAsk функция для добовления нового вопроса
+func NewAsk(url string, ask string) error {
+
+	res, err := r.DB("Faskdb").Table("fasker").GetAllByIndex("murl", url).Run(session)
+	if err != nil {
+		return err
+	}
+
+	var f Faskurl
+	err = res.One(&f)
+	if err != nil {
+		return err
+	}
+
+	var nask AndAs
+	nask.Ask = ask
+
+	f.Fasks = append(f.Fasks, nask)
+
+	_, err = r.DB("Faskdb").Table("fasker").Get(f.ID).Replace(f).Run(session)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 //GetMFask функция для получения вопросов и ответов на общую страницу вопросника
 func GetMFask(url string) (Faskurl, error) {
 	var f Faskurl
@@ -66,5 +94,6 @@ func GetSFask(url string) (Faskurl, error) {
 	}
 
 	return f, nil
+
 
 }
