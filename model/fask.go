@@ -21,8 +21,6 @@ type Faskurl struct {
 	Fasks []AndAs `json:"fasks",gorethink:"fasks"`
 }
 
-
-
 var session *r.Session
 
 //InitSession активирует сессию связи с БД
@@ -33,8 +31,6 @@ func InitSession() error {
 	})
 	return err
 }
-
-
 
 //NewFask функция создания нового опросника
 func NewFask() (Faskurl, error) {
@@ -49,21 +45,31 @@ func NewFask() (Faskurl, error) {
 	// получаем основной guid для адресса опросника
 	var MUUID string
 	err = res.One(&MUUID)
-	if res != nil {
+	if err != nil {
 		return f, err
 	}
 
 	// получаем секретный guid для адресса опросника
+	res, err = r.UUID().Run(session)
+	if err != nil {
+		return f, err
+	}
+
 	var SUUID string
 	err = res.One(&SUUID)
-	if res != nil {
+	if err != nil {
 		return f, err
 	}
 
 	// получаем id для объекта опросник
+	res, err = r.UUID().Run(session)
+	if err != nil {
+		return f, err
+	}
+
 	var UUID string
 	err = res.One(&UUID)
-	if res != nil {
+	if err != nil {
 		return f, err
 	}
 
@@ -73,14 +79,11 @@ func NewFask() (Faskurl, error) {
 
 	// производим запись в БД
 	res, err = r.DB("Faskdb").Table("fasker").Insert(f).Run(session)
-	if res != nil {
+	if err != nil {
 		return f, err
 	}
-
 	return f, nil
 }
-
-
 
 //NewAnswer функция для добовления ответа на определенный вопрос
 func NewAnswer(url string, id string, answer string) error {
@@ -101,7 +104,7 @@ func NewAnswer(url string, id string, answer string) error {
 	if err != nil {
 		return err
 	}
-	
+
 	f.Fasks[nid].Answer = answer
 
 	_, err = r.DB("Faskdb").Table("fasker").Get(f.ID).Replace(f).Run(session)
@@ -138,7 +141,6 @@ func NewAsk(url string, ask string) error {
 
 	return nil
 }
-
 
 //GetMFask функция для получения вопросов и ответов на общую страницу вопросника
 func GetMFask(url string) (Faskurl, error) {
