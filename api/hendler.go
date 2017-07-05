@@ -13,7 +13,6 @@ import (
 	"github.com/ComputePractice2017/ask-server/model"
 
 	"github.com/gorilla/mux"
-
 )
 
 func helloMFWorldHandler(w http.ResponseWriter, r *http.Request) {
@@ -21,11 +20,8 @@ func helloMFWorldHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello World MZF!!!")
 }
 
-
-
-
 func newFaskHandler(w http.ResponseWriter, r *http.Request) {
-var fasks model.Faskurl
+	var fasks model.Faskurl
 
 	fasks, err := model.NewFask()
 	if err != nil {
@@ -35,15 +31,16 @@ var fasks model.Faskurl
 	}
 
 	w.WriteHeader(http.StatusCreated)
-
 	if err = json.NewEncoder(w).Encode(fasks); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println(err)
 	}
+	w.WriteHeader(http.StatusOK)
 }
+
 func newAnswerHandler(w http.ResponseWriter, r *http.Request) {
 
-var answer string
+	var answer model.AndAs
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -81,8 +78,7 @@ var answer string
 }
 func newAskHandler(w http.ResponseWriter, r *http.Request) {
 
-	var ask string
-
+	var ask model.AndAs
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -110,7 +106,7 @@ func newAskHandler(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 
-	err = model.NewAsk(vars["guid"], ask
+	err = model.NewAsk(vars["guid"], ask)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println(err)
@@ -119,8 +115,7 @@ func newAskHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 
-  }
-
+}
 
 func getMFaskHandler(w http.ResponseWriter, r *http.Request) {
 
