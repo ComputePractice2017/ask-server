@@ -23,6 +23,8 @@ func helloMFWorldHandler(w http.ResponseWriter, r *http.Request) {
 func newFaskHandler(w http.ResponseWriter, r *http.Request) {
 	var fasks model.Faskurl
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	fasks, err := model.NewFask()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -42,6 +44,7 @@ func newAnswerHandler(w http.ResponseWriter, r *http.Request) {
 
 	var answer model.AndAs
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
@@ -80,6 +83,7 @@ func newAskHandler(w http.ResponseWriter, r *http.Request) {
 
 	var ask model.AndAs
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
@@ -137,6 +141,7 @@ func getMFaskHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -160,7 +165,31 @@ func getSFaskHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 
+}
+
+func firstOptionsHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Allow", "OPTIONS,  POST")
+	w.WriteHeader(http.StatusOK)
+}
+
+func secondOptionsHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Allow", "OPTIONS, GET")
+	w.WriteHeader(http.StatusOK)
+}
+
+func threeOptionsHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Allow", "OPTIONS, GET")
+	w.WriteHeader(http.StatusOK)
+}
+
+func fourOptionsHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Allow", "OPTIONS, POST")
+	w.WriteHeader(http.StatusOK)
+}
+func fiveOptionsHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Allow", "OPTIONS,  POST")
+	w.WriteHeader(http.StatusOK)
 }
