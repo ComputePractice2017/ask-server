@@ -110,7 +110,7 @@ func newAskHandler(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 
-	err = model.NewAsk(vars["guid"], ask
+	err = model.NewAsk(vars["guid"], ask)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println(err)
