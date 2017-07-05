@@ -155,7 +155,7 @@ func NewFask() (Faskurl, error) {
 }
 
 //NewAnswer функция для добовления ответа на определенный вопрос
-func NewAnswer(url string, id string, answer string) error {
+func NewAnswer(url string, id string, nanswer AndAs) error {
 
 	res, err := r.DB("Faskdb").Table("fasker").Filter(map[string]interface{}{
 		"Surl": url,
@@ -176,7 +176,7 @@ func NewAnswer(url string, id string, answer string) error {
 		return err
 	}
 
-	f.Fasks[nid].Answer = answer
+	f.Fasks[nid].Answer = nanswer.Answer
 
 	_, err = r.DB("Faskdb").Table("fasker").Get(f.ID).Replace(f).Run(session)
 	if err != nil {
@@ -187,7 +187,7 @@ func NewAnswer(url string, id string, answer string) error {
 }
 
 //NewAsk функция для добовления нового вопроса
-func NewAsk(url string, ask string) error {
+func NewAsk(url string, nask AndAs) error {
 
 	res, err := r.DB("Faskdb").Table("fasker").Filter(map[string]interface{}{
 		"Murl": url,
@@ -202,8 +202,8 @@ func NewAsk(url string, ask string) error {
 		return err
 	}
 
-	var nask AndAs
-	nask.Ask = ask
+	//var nask AndAs
+	//nask.Ask = ask
 
 	f.Fasks = append(f.Fasks, nask)
 

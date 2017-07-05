@@ -40,7 +40,7 @@ func newFaskHandler(w http.ResponseWriter, r *http.Request) {
 
 func newAnswerHandler(w http.ResponseWriter, r *http.Request) {
 
-	var answer string
+	var answer model.AndAs
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -78,7 +78,7 @@ func newAnswerHandler(w http.ResponseWriter, r *http.Request) {
 }
 func newAskHandler(w http.ResponseWriter, r *http.Request) {
 
-	var ask string
+	var ask model.AndAs
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
